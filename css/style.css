@@ -1,0 +1,15 @@
+html{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+}
+body{
+      text-align: center;
+      background-color: black;
+}
+#mapCanvas{
+      background-color: #2a5;
+}
+h1{
+      color: white;
+}
