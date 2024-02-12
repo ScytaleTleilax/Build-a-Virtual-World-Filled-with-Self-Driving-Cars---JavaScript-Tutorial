@@ -24,6 +24,10 @@ class Graph {
             this.segments.push(seg);
       }
 
+      removePoint(point){
+            this.points.splice(this.points.indexOf(point) , 1);
+      }
+
       removeSegment(seg){
             this.segments.splice(this.segments.indexOf(seg) , 1);
       }
