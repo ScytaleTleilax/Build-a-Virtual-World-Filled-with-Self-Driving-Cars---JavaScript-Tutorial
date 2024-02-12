@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
       <title>World Editor</title>
-      <meta charset="UTF-8">
+      <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -12,35 +12,19 @@
       <h1>World Editor </h1>
       <canvas id="mapCanvas"></canvas>
       <div id="controls">
+            <!-- obsolete UX design , to many user interactions required. 
+            @ToDo implement ergonomic UX (less clicks and buttons) -->
             <button onclick="addRandomPoint()">Add Point</button>
             <button onclick="addRandomSegment()">Add Segment</button>
+            <button onclick="removeRandomSegment()">Remove Segment</button>
+            <button onclick="removeRandomPoint()">Remove Point</button>
+            <button onclick="removeAll()">Remove All</button>
       </div>
 
-      <script src="js/math/graph.js"></script>
-      <script src="js/primitives/segment.js"></script>
       <script src="js/primitives/point.js"></script>
+      <script src="js/primitives/segment.js"></script>
+      <script src="js/math/graph.js"></script>
       <script>
-            function addRandomSegment() {
-                  const index1 = Math.floor(Math.random() * graph.points.length);
-                  const index2 = Math.floor(Math.random() * graph.points.length);
-                        const success = graph.tryAddSegment(
-                              new Segment( graph.points[index1] , graph.points[index2])
-                        )
-                  ctx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
-                  graph.draw(ctx);
-                  console.log(success);
-            }
-            function addRandomPoint() {
-                  const success = graph.tryAddPoint(
-                        new Point(
-                              Math.random() * mapCanvas.width,
-                              Math.random() * mapCanvas.height
-                        )
-                  );
-                  ctx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
-                  graph.draw(ctx);
-                  console.log(success);
-            }
             mapCanvas.width = 600;
             mapCanvas.height = 600;
 
@@ -56,9 +40,60 @@
             const l3 = new Segment(p3, p2);
 
 
-            const graph = new Graph([ p1, p2, p3, p4], [ l1, l2, l3]);
+            const graph = new Graph([p1, p2, p3, p4], [l1, l2, l3]);
+
+            function removeRandomPoint() {
+                  if (graph.points.length == 0) {
+                        console.log("no points defined");
+                        return;
+                  }
+                  const index = Math.floor(Math.random() * graph.points.length);
+                  console.log(index);
+                  graph.removePoint(graph.points[index]);
+                  this.updateGraph(ctx);
+            }
+
+            function removeRandomSegment() {
+                  if (graph.segments.length == 0) {
+                        console.log("no segments defined");
+                        return;
+                  }
+                  const index = Math.floor(Math.random() * graph.segments.length);
+                  graph.removeSegment(graph.segments[index]);
+                  this.updateGraph(ctx);
+            }
+
+            function addRandomSegment() {
+                  const index1 = Math.floor(Math.random() * graph.points.length);
+                  const index2 = Math.floor(Math.random() * graph.points.length);
+                  const success = graph.tryAddSegment(
+                        new Segment(graph.points[index1], graph.points[index2])
+                  )
+                  this.updateGraph(ctx);
+
+            }
+
+            function addRandomPoint() {
+                  const success = graph.tryAddPoint(
+                        new Point(
+                              Math.random() * mapCanvas.width,
+                              Math.random() * mapCanvas.height
+                        )
+                  );
+                  this.updateGraph(ctx);
+            }
+
+            function removeAll() {
+                  graph.dispose();
+                  this.updateGraph(ctx);
+            }
+
+            function updateGraph(ctx) {
+                  ctx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
+                  graph.draw(ctx);
+            }
             graph.draw(ctx);
       </script>
 </body>
 
-</html> 
+</html>
